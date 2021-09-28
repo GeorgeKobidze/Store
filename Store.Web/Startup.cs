@@ -1,14 +1,9 @@
+using Domain.Application.InjectedServices;
 using Domain.ExceptionHandler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Store.Web
 {
@@ -25,14 +20,15 @@ namespace Store.Web
         {
             services.AddControllersWithViews();
             services.AddSwaggerGen();
+            services.AddServices(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {          
 
-            app.UseMiddleware<ErrorHandlingMidlware>();
+            app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Store v1"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Store v2"));
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
@@ -40,6 +36,7 @@ namespace Store.Web
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {

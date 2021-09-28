@@ -11,6 +11,8 @@ namespace Domain.Model
 {
     public class Role : AuditTable
     {
+        [MaxLength(200)]
+        [Required]
         public string RoleName { get; set; }
 
         public ICollection<UserRole> UserRoles { get; set; }

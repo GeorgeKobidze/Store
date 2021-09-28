@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Model
 {
-    public class OrderDetail : AuditTable
+    public class CustomerAddress : AuditTable
     {
         [MaxLength(50)]
         public string AddressLine1 { get; set; }
@@ -21,9 +21,6 @@ namespace Domain.Model
         [MaxLength(50)]
         public string PostalCode { get; set; }
 
-        public DateTime ShipedTime { get; set; }
-
-
-        public Order Order { get; set; }
+        public Customer Customer { get; set; }
     }
 }

@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Domain.ExceptionHandler
 {
-    public class ErrorHandlingMidlware
+    public class ErrorHandlingMiddleware
     {
         readonly RequestDelegate _next;
-        private readonly ILogger<ErrorHandlingMidlware> _logger;
-        public ErrorHandlingMidlware(
+        private readonly ILogger<ErrorHandlingMiddleware> _logger;
+        public ErrorHandlingMiddleware(
             RequestDelegate next,
-            ILogger<ErrorHandlingMidlware> logger)
+            ILogger<ErrorHandlingMiddleware> logger)
         {
             _next = next;
             _logger = logger;
@@ -32,7 +32,7 @@ namespace Domain.ExceptionHandler
                 await HandleExceptionAsync(context, ex, _logger);
             }
         }
-        static async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ErrorHandlingMidlware> logger)
+        static async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ErrorHandlingMiddleware> logger)
         {
             Guid operationId = Guid.NewGuid();
             var code = HttpStatusCode.InternalServerError; // 500 if unexpected

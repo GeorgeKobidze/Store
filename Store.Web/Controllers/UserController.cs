@@ -17,17 +17,12 @@ namespace Store.Web.Controllers
 
         }
 
-        [AllowAnonymous]
+        [Authorize]
         [HttpPost("Register")]
         public async Task<IActionResult> Register()
         {
-            return Ok(ecx());
+            return Ok();
         }
-
-
-        private string ecx()
-        {
-            throw new UserNotFoundException();
-        }
+       
     }
 }
