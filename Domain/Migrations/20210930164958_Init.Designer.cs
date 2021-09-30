@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20210928133651_Init")]
+    [Migration("20210930164958_Init")]
     partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -520,10 +520,10 @@ namespace Domain.Migrations
                     b.Property<DateTime?>("LastModifiedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("RoleUid")
+                    b.Property<Guid>("RoleUid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserUid")
+                    b.Property<Guid>("UserUid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Uid");
@@ -627,11 +627,15 @@ namespace Domain.Migrations
                 {
                     b.HasOne("Domain.Model.Role", "Role")
                         .WithMany("UserRoles")
-                        .HasForeignKey("RoleUid");
+                        .HasForeignKey("RoleUid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Model.User", "User")
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserUid");
+                        .HasForeignKey("UserUid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Role");
 

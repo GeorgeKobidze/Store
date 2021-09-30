@@ -1,4 +1,8 @@
-﻿using Domain.Infrastructure.AutoMapperProfile;
+﻿using Domain.Application.Customers;
+using Domain.Application.Services.CustomerAddresses;
+using Domain.Application.Services.UserRoles;
+using Domain.Application.Services.Users;
+using Domain.Infrastructure.AutoMapperProfile;
 using Domain.Infrastructure.Services;
 using Domain.Infrastructure.Services.UnitOfWork;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -18,8 +22,12 @@ namespace Domain.Application.InjectedServices
 
             services.AddScoped(typeof(IUnitOfWork<>), typeof(UnitOfWork<>));
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-           //
-           // services.AddScoped<IUserService,UserService>();
+
+            services.AddScoped<IUserService,UserService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<ICustomerAddressService, CustomerAddressService>();
+            services.AddScoped<IUserRoleService, UserRoleService>();
+
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(option =>

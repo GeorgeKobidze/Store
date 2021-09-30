@@ -11,7 +11,10 @@ namespace Domain.Model
 {
     public class UserRole : AuditTable
     {
+        public Guid RoleUid { get; set; }
         public Role Role { get; set; }
+
+        public Guid UserUid { get; set; }
         public User User { get; set; }
     }
 }

@@ -12,6 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Domain.ExceptionHandler\Domain.ExceptionHandler.csproj" />
     <ProjectReference Include="..\Domain.Infrastructure\Domain.Infrastructure.csproj" />
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>

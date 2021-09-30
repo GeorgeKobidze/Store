@@ -16,7 +16,7 @@ namespace Domain
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
+        {          
         }
 
         

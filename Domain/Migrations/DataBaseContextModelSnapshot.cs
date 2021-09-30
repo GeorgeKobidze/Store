@@ -518,10 +518,10 @@ namespace Domain.Migrations
                     b.Property<DateTime?>("LastModifiedDateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("RoleUid")
+                    b.Property<Guid>("RoleUid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("UserUid")
+                    b.Property<Guid>("UserUid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Uid");
@@ -625,11 +625,15 @@ namespace Domain.Migrations
                 {
                     b.HasOne("Domain.Model.Role", "Role")
                         .WithMany("UserRoles")
-                        .HasForeignKey("RoleUid");
+                        .HasForeignKey("RoleUid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Model.User", "User")
                         .WithMany("UserRoles")
-                        .HasForeignKey("UserUid");
+                        .HasForeignKey("UserUid")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Role");
 

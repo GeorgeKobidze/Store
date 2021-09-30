@@ -9,9 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Application", "Domai
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.Infrastructure", "Domain.Infrastructure\Domain.Infrastructure.csproj", "{A93EF868-9026-4498-9D11-D879212744D3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain.ExceptionHandler", "Domain.ExceptionHandler\Domain.ExceptionHandler.csproj", "{37C1A332-9C7D-4F41-9EF7-83200339ED4E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain.ExceptionHandler", "Domain.ExceptionHandler\Domain.ExceptionHandler.csproj", "{37C1A332-9C7D-4F41-9EF7-83200339ED4E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Store.Web", "Store.Web\Store.Web.csproj", "{8B048B8F-DA0C-40BB-99E2-9A4C27C93B10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Store.API", "Store.Web\Store.API.csproj", "{8B048B8F-DA0C-40BB-99E2-9A4C27C93B10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

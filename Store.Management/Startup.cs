@@ -2,10 +2,16 @@ using Domain.Application.InjectedServices;
 using Domain.ExceptionHandler;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace Store.Web
+namespace Store.Management
 {
     public class Startup
     {
@@ -24,11 +30,11 @@ namespace Store.Web
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {          
+        {
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
             app.UseSwagger();
-            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Store v2"));
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Store.Management v2"));
 
             app.UseHttpsRedirection();
 
@@ -36,7 +42,7 @@ namespace Store.Web
 
             app.UseAuthorization();
             app.UseAuthentication();
- 
+
 
             app.UseEndpoints(endpoints =>
             {

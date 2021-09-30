@@ -225,8 +225,8 @@ namespace Domain.Migrations
                 columns: table => new
                 {
                     Uid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    RoleUid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    UserUid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    RoleUid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserUid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Deleted = table.Column<bool>(type: "bit", nullable: false)
@@ -239,13 +239,13 @@ namespace Domain.Migrations
                         column: x => x.RoleUid,
                         principalTable: "Roles",
                         principalColumn: "Uid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_UserRoles_Users_UserUid",
                         column: x => x.UserUid,
                         principalTable: "Users",
                         principalColumn: "Uid",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

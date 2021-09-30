@@ -1,4 +1,7 @@
 ﻿using AutoMapper;
+using Domain.Infrastructure.AutoMapperProfile.CustomerAddressMapperProfile;
+using Domain.Infrastructure.AutoMapperProfile.CustomerMapperProfile;
+using Domain.Infrastructure.AutoMapperProfile.UserMapperProfile;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +14,9 @@ namespace Domain.Infrastructure.AutoMapperProfile
     {
         public AutoMappersProfile()
         {
+            new CustomerAddressAutoMapperProfile();
+            new CustomerAutoMapperProfile();
+            new UserAutoMapperProfile();
         }
     }
 }
