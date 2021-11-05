@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Domain.Infrastructure.DataTransferObjects.Request.User;
+using Domain.Infrastructure.DataTransferObjects.Response.User;
 using Domain.Model;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,11 @@ namespace Domain.Infrastructure.AutoMapperProfile.UserMapperProfile
              .ForMember(c => c.Deleted, op => op.Ignore())
              .ForMember(c => c.UserRoles,op => op.Ignore())
              .ForSourceMember(c => c.UserRoles, op => op.DoNotValidate());
+
+
+             CreateMap<User, UserLoginInformation>()
+             .ForSourceMember(c => c.UserRoles, op => op.DoNotValidate());
+
         }
     }
 }

@@ -10,6 +10,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Infrastructure.Extension;
+using Domain.Infrastructure.DataTransferObjects.Response.User;
+using System.Security.Claims;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Configuration;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Application.Services.Users
 {
@@ -19,13 +25,33 @@ namespace Domain.Application.Services.Users
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<Role> _roleunitofWork;
         private readonly IUserRoleService _userRoleService;
+        private readonly IConfiguration _configuration;
 
-        public UserService(IUnitOfWork<User> unitOfWokr,IMapper mapper,IUnitOfWork<Role> roleunitofWork,IUserRoleService userRoleService)
+        public UserService(IUnitOfWork<User> unitOfWokr,IMapper mapper,IUnitOfWork<Role> roleunitofWork,IUserRoleService userRoleService, IConfiguration configuration)
         {
             _unitOfWokr = unitOfWokr;
             _mapper = mapper;
             _roleunitofWork = roleunitofWork;
             _userRoleService = userRoleService;
+            _configuration = configuration;
+        }
+
+        public async Task<UserLoginInformation> LoginUser(LoginUserDto loginUserDto)
+        {
+            var _user = _unitOfWokr.Repository.Where(e => e.Email.ToUpper() == loginUserDto.Email.ToUpper()
+                                                        && e.Password == Extensions.PassswordHasher(loginUserDto.Password))
+                                                        .Include(e => e.UserRoles)
+                                                        .ThenInclude(e => e.Role)
+                                                        .FirstOrDefault();
+            if (_user == null)
+                throw new UserNotFoundException();
+
+            var userLoginInformation = _mapper.Map<UserLoginInformation>(_user);
+
+            userLoginInformation.JwtToken = await CreateTokenForUser(_user,_user.UserRoles.ToList()); ;
+
+
+            return userLoginInformation;
         }
 
         public async Task ResgisterUser(RegisterUserDto registerUser)
@@ -67,6 +93,41 @@ namespace Domain.Application.Services.Users
             await _unitOfWokr.CommitAsync();
         }
 
+
+
+
+
+        private async Task<string> CreateTokenForUser(User user,List<UserRole> Roles)
+        {
+            List<Claim> claims = new List<Claim>()
+            {
+                new Claim(ClaimTypes.NameIdentifier,user.Uid.ToString()),
+                new Claim(ClaimTypes.Email,user.Email.ToString())
+            };
+
+            foreach (var role in Roles)
+            {
+                var claim = new Claim(ClaimTypes.Role, role.Role.RoleName.ToString());
+                claims.Add(claim);
+            }
+
+            SymmetricSecurityKey key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
+
+            SigningCredentials creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.Now.AddDays(1),
+                SigningCredentials = creds
+            };
+
+            JwtSecurityTokenHandler tokenhandler = new JwtSecurityTokenHandler();
+            SecurityToken token = tokenhandler.CreateToken(tokenDescriptor);
+
+            return tokenhandler.WriteToken(token);
+        }
 
 
 

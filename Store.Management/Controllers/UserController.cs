@@ -1,12 +1,14 @@
 ﻿using Domain.Application.Services.Users;
+using Domain.ExceptionHandler.CustomException;
 using Domain.Infrastructure.DataTransferObjects.Request.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Store.Management.Controllers
+namespace Store.Web.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -19,13 +21,20 @@ namespace Store.Management.Controllers
             _userService = userService;
         }
 
-        [HttpPost("Register")]
-        public async Task<IActionResult> RegisterUser(RegisterUserDto registerUserDto)
+        [HttpPost("LoginUser")]
+        public async Task<IActionResult> Login(LoginUserDto loginUser)
+        {            
+            return Ok(await _userService.LoginUser(loginUser));
+        }
+
+
+        [Authorize(AuthenticationSchemes = "Bearer",Roles = "Admin")]
+        [HttpPost("RegisterUser")]
+        public async Task<IActionResult> Register(RegisterUserDto registerUser)
         {
-            if (!ModelState.IsValid)
-                return BadRequest();
-            await _userService.ResgisterUser(registerUserDto);
+            await _userService.ResgisterUser(registerUser);
             return Ok();
         }
+       
     }
 }
