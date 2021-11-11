@@ -35,6 +35,15 @@ namespace Store.Web.Controllers
             await _userService.ResgisterUser(registerUser);
             return Ok();
         }
+
+        [Authorize(AuthenticationSchemes = "Bearer", Roles = "Admin")]
+        [HttpGet("DeleteUser")]
+        public async Task<IActionResult> DeleteUser(Guid UserUid)
+        {
+            await _userService.DeleteUser(UserUid);
+            return Ok();
+        }
+
        
     }
 }

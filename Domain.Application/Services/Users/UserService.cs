@@ -27,7 +27,7 @@ namespace Domain.Application.Services.Users
         private readonly IUserRoleService _userRoleService;
         private readonly IConfiguration _configuration;
 
-        public UserService(IUnitOfWork<User> unitOfWokr,IMapper mapper,IUnitOfWork<Role> roleunitofWork,IUserRoleService userRoleService, IConfiguration configuration)
+        public UserService(IUnitOfWork<User> unitOfWokr, IMapper mapper, IUnitOfWork<Role> roleunitofWork, IUserRoleService userRoleService, IConfiguration configuration)
         {
             _unitOfWokr = unitOfWokr;
             _mapper = mapper;
@@ -35,6 +35,8 @@ namespace Domain.Application.Services.Users
             _userRoleService = userRoleService;
             _configuration = configuration;
         }
+
+
 
         public async Task<UserLoginInformation> LoginUser(LoginUserDto loginUserDto)
         {
@@ -48,7 +50,7 @@ namespace Domain.Application.Services.Users
 
             var userLoginInformation = _mapper.Map<UserLoginInformation>(_user);
 
-            userLoginInformation.JwtToken = await CreateTokenForUser(_user,_user.UserRoles.ToList()); ;
+            userLoginInformation.JwtToken = await CreateTokenForUser(_user, _user.UserRoles.ToList()); ;
 
 
             return userLoginInformation;
@@ -61,13 +63,11 @@ namespace Domain.Application.Services.Users
             var _user = _mapper.Map<User>(registerUser);
 
             if (_unitOfWokr.Repository.Where(e => e.Email.ToUpper() == _user.Email.ToUpper()).Any())
-            {
                 throw new EmailAlreadyUsedException();
-            }
+
             if (_unitOfWokr.Repository.Where(e => e.Mobile.ToUpper() == _user.Mobile.ToUpper()).Any())
-            {
                 throw new MobileAlreadyUsedException();
-            }
+
 
             _user.Password = Extensions.PassswordHasher(_user.Password);
 
@@ -76,9 +76,8 @@ namespace Domain.Application.Services.Users
                 var _role = await _roleunitofWork.Repository.GetById(item.Uid);
 
                 if (_role == null)
-                {
                     throw new RoleNotFoundException();
-                }
+
 
                 var userrole = new UserRole()
                 {
@@ -93,11 +92,22 @@ namespace Domain.Application.Services.Users
             await _unitOfWokr.CommitAsync();
         }
 
+        public async Task DeleteUser(Guid UserUid)
+        {
+            var _user = await _unitOfWokr.Repository.GetById(UserUid);
+
+            if (_user == null)
+                throw new UserNotFoundException();
+
+            _user.Deleted = true;
+
+            _unitOfWokr.Repository.Update(_user);
+            await _unitOfWokr.CommitAsync();
+        }
 
 
 
-
-        private async Task<string> CreateTokenForUser(User user,List<UserRole> Roles)
+        private async Task<string> CreateTokenForUser(User user, List<UserRole> Roles)
         {
             List<Claim> claims = new List<Claim>()
             {

@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
+using Domain.Infrastructure.AutoMapperProfile.CategoryMapperProfile;
 using Domain.Infrastructure.AutoMapperProfile.CustomerAddressMapperProfile;
 using Domain.Infrastructure.AutoMapperProfile.CustomerMapperProfile;
+using Domain.Infrastructure.AutoMapperProfile.ProductMapperProfile;
 using Domain.Infrastructure.AutoMapperProfile.UserMapperProfile;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,8 @@ namespace Domain.Infrastructure.AutoMapperProfile
             new CustomerAddressAutoMapperProfile();
             new CustomerAutoMapperProfile();
             new UserAutoMapperProfile();
+            new CategoryAutoMapperProfile();
+            new ProductAutoMapperProfile();
         }
     }
 }

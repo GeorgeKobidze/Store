@@ -44,7 +44,14 @@ namespace Domain.Infrastructure.Services
 
         public async Task<T> GetById(Guid Id)
         {
-            return await _dataBaseContext.Set<T>().AsNoTracking().SingleAsync(x => x.Uid == Id);
+            return await _dataBaseContext.Set<T>().AsNoTracking().Where(e => !e.Deleted).SingleAsync(x => x.Uid == Id);
+        }
+
+        public void SoftDelete(T entity)
+        {
+            entity.LastModifiedDateTime = DateTime.Now;
+            entity.Deleted = true;
+            _dataBaseContext.Update(entity);
         }
 
         public void Update(T entity)
@@ -65,7 +72,12 @@ namespace Domain.Infrastructure.Services
 
         public IQueryable<T> Where(Expression<Func<T, bool>> expression)
         {
-            return _dataBaseContext.Set<T>().Where<T>(expression);
+            return _dataBaseContext.Set<T>().Where(e => !e.Deleted).Where<T>(expression);
+        }
+
+        public IQueryable<T> WhereOnDeleted(Expression<Func<T, bool>> expression)
+        {
+            return _dataBaseContext.Set<T>().Where(e => e.Deleted).Where<T>(expression);
         }
     }
 

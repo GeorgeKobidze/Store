@@ -17,6 +17,7 @@ namespace Domain.Model
         [Required]
         public string FilePath { get; set; }
 
+        public Guid ProductUid { get; set; }
         public Product Product { get; set; }
     }
 }

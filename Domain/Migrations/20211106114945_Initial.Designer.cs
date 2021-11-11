@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Domain.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20210930164958_Init")]
-    partial class Init
+    [Migration("20211106114945_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -342,6 +342,9 @@ namespace Domain.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CategoryUid")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime>("CreatedDateTime")
                         .HasColumnType("datetime2");
 
@@ -354,14 +357,16 @@ namespace Domain.Migrations
                     b.Property<Guid?>("ProductUid")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("categoryUid")
+                    b.Property<Guid?>("SubCategoryUid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("Uid");
 
+                    b.HasIndex("CategoryUid");
+
                     b.HasIndex("ProductUid");
 
-                    b.HasIndex("categoryUid");
+                    b.HasIndex("SubCategoryUid");
 
                     b.ToTable("ProductCategories");
                 });
@@ -592,17 +597,23 @@ namespace Domain.Migrations
 
             modelBuilder.Entity("Domain.Model.ProductCategory", b =>
                 {
+                    b.HasOne("Domain.Model.Category", "Category")
+                        .WithMany("ProductCategories")
+                        .HasForeignKey("CategoryUid");
+
                     b.HasOne("Domain.Model.Product", "Product")
                         .WithMany("ProductCategories")
                         .HasForeignKey("ProductUid");
 
-                    b.HasOne("Domain.Model.Category", "category")
+                    b.HasOne("Domain.Model.SubCategory", "SubCategory")
                         .WithMany("ProductCategories")
-                        .HasForeignKey("categoryUid");
+                        .HasForeignKey("SubCategoryUid");
 
-                    b.Navigation("category");
+                    b.Navigation("Category");
 
                     b.Navigation("Product");
+
+                    b.Navigation("SubCategory");
                 });
 
             modelBuilder.Entity("Domain.Model.ProductFile", b =>
@@ -671,6 +682,11 @@ namespace Domain.Migrations
             modelBuilder.Entity("Domain.Model.Role", b =>
                 {
                     b.Navigation("UserRoles");
+                });
+
+            modelBuilder.Entity("Domain.Model.SubCategory", b =>
+                {
+                    b.Navigation("ProductCategories");
                 });
 
             modelBuilder.Entity("Domain.Model.User", b =>

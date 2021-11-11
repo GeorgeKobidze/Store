@@ -28,7 +28,7 @@ namespace Domain.Application.Customers
         private readonly IConfiguration _configuration;
         private readonly IUnitOfWork<CustomerAddress> _customerAddressUnitOfWork;
 
-        public CustomerService(IMapper imapper,ICustomerAddressService customerAddressService, 
+        public CustomerService(IMapper imapper, ICustomerAddressService customerAddressService,
             IUnitOfWork<Customer> unitOfWork, IConfiguration configuration,
             IUnitOfWork<CustomerAddress> customerAddressUnitOfWork)
         {
@@ -39,20 +39,18 @@ namespace Domain.Application.Customers
             _customerAddressUnitOfWork = customerAddressUnitOfWork;
         }
 
-        public async  Task RegisterCustomer(RegisterCustomerDto registerCustomer)
+        public async Task RegisterCustomer(RegisterCustomerDto registerCustomer)
         {
             var _customer = _imapper.Map<Customer>(registerCustomer);
             _customer.Password = Extensions.PassswordHasher(_customer.Password);
             var _customerAddress = _imapper.Map<CustomerAddress>(registerCustomer.CustomerAddress);
 
             if (_unitOfWork.Repository.Where(e => e.Email.ToUpper() == _customer.Email.ToUpper()).Any())
-            {
                 throw new EmailAlreadyUsedException();
-            }
+
             if (_unitOfWork.Repository.Where(e => e.Mobile.ToUpper() == _customer.Mobile.ToUpper()).Any())
-            {
                 throw new MobileAlreadyUsedException();
-            }
+
             await _unitOfWork.Repository.Add(_customer);
 
             _customerAddress.Customer = _customer;
@@ -61,15 +59,16 @@ namespace Domain.Application.Customers
             await _unitOfWork.CommitAsync();
         }
 
-       
+
 
         public async Task<CustomerLoginInformationDto> LoginCustomer(CustomerLoginDto customerLogin)
         {
 
-            var _customer = _unitOfWork.Repository.Where(e => e.Email.ToUpper() == customerLogin.Email.ToUpper() 
+            var _customer = _unitOfWork.Repository.Where(e => e.Email.ToUpper() == customerLogin.Email.ToUpper()
                                                             && e.Password == Extensions.PassswordHasher(customerLogin.Password))
-                                                            .FirstOrDefault();
-            if (_customer == null)            
+                                                            .FirstOrDefault();       
+
+            if (_customer == null)
                 throw new CustomerNotFoundException();
 
             var CustomerLoginInformation = _imapper.Map<CustomerLoginInformationDto>(_customer);
@@ -82,27 +81,23 @@ namespace Domain.Application.Customers
 
 
 
-       
+
 
         public async Task UpdateCustomer(UpdateCustomerDto updateCustomer)
         {
             var customer = _unitOfWork.Repository.GetById(updateCustomer.Uid).Result;
 
             if (customer == null)
-            {
                 throw new CustomerNotFoundException();
-            }
 
             if (_unitOfWork.Repository.Where(e => e.Email.ToUpper() == updateCustomer.Email.ToUpper() && e.Uid != updateCustomer.Uid).Any())
-            {
                 throw new EmailAlreadyUsedException();
-            }
-            if (_unitOfWork.Repository.Where(e => e.Mobile.ToUpper() == updateCustomer.Mobile.ToUpper() && e.Uid != updateCustomer.Uid).Any())
-            {
-                throw new MobileAlreadyUsedException();
-            }
 
-            var _customer = _imapper.Map<UpdateCustomerDto,Customer>(updateCustomer, customer);
+            if (_unitOfWork.Repository.Where(e => e.Mobile.ToUpper() == updateCustomer.Mobile.ToUpper() && e.Uid != updateCustomer.Uid).Any())
+                throw new MobileAlreadyUsedException();
+
+
+            var _customer = _imapper.Map<UpdateCustomerDto, Customer>(updateCustomer, customer);
             _unitOfWork.Repository.Update(_customer);
             await _customerAddressService.UpdateAdress(updateCustomer.CustomerAddress, _customer);
 
@@ -113,14 +108,12 @@ namespace Domain.Application.Customers
         {
             var customer = await _unitOfWork.Repository.GetById(updateCustomerPassword.Uid);
             if (customer == null)
-            {
                 throw new CustomerNotFoundException();
-            }
+
 
             if (customer.Password != Extensions.PassswordHasher(updateCustomerPassword.OldPassword))
-            {
                 throw new OldPasswordIsNotCorrectEcxpetion();
-            }
+
             customer.Password = Extensions.PassswordHasher(updateCustomerPassword.NewPassword);
 
             _unitOfWork.Repository.Update(customer);
@@ -157,4 +150,4 @@ namespace Domain.Application.Customers
 
 
     }
-} 
+}

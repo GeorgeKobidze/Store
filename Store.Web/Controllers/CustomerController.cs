@@ -64,5 +64,14 @@ namespace Store.Web.Controllers
             return Ok();
         }
 
+
+        [HttpDelete("DeleteCustomer")]
+        public async Task<IActionResult> DeleteCustomer()
+        {
+            GetAuth();
+            return Ok();
+        }
+
+
     }
 }

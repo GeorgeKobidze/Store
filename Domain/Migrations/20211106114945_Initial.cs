@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Domain.Migrations
 {
-    public partial class Init : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -170,34 +170,6 @@ namespace Domain.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductCategories",
-                columns: table => new
-                {
-                    Uid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductUid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    categoryUid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    LastModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Deleted = table.Column<bool>(type: "bit", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ProductCategories", x => x.Uid);
-                    table.ForeignKey(
-                        name: "FK_ProductCategories_Categories_categoryUid",
-                        column: x => x.categoryUid,
-                        principalTable: "Categories",
-                        principalColumn: "Uid",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_ProductCategories_Products_ProductUid",
-                        column: x => x.ProductUid,
-                        principalTable: "Products",
-                        principalColumn: "Uid",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ProductFiles",
                 columns: table => new
                 {
@@ -246,6 +218,41 @@ namespace Domain.Migrations
                         principalTable: "Users",
                         principalColumn: "Uid",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ProductCategories",
+                columns: table => new
+                {
+                    Uid = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductUid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CategoryUid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    SubCategoryUid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedDateTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    LastModifiedDateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Deleted = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductCategories", x => x.Uid);
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_Categories_CategoryUid",
+                        column: x => x.CategoryUid,
+                        principalTable: "Categories",
+                        principalColumn: "Uid",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_Products_ProductUid",
+                        column: x => x.ProductUid,
+                        principalTable: "Products",
+                        principalColumn: "Uid",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_ProductCategories_SubCategories_SubCategoryUid",
+                        column: x => x.SubCategoryUid,
+                        principalTable: "SubCategories",
+                        principalColumn: "Uid",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -358,14 +365,19 @@ namespace Domain.Migrations
                 column: "CustomerUid");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProductCategories_categoryUid",
+                name: "IX_ProductCategories_CategoryUid",
                 table: "ProductCategories",
-                column: "categoryUid");
+                column: "CategoryUid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductCategories_ProductUid",
                 table: "ProductCategories",
                 column: "ProductUid");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductCategories_SubCategoryUid",
+                table: "ProductCategories",
+                column: "SubCategoryUid");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ProductFiles_ProductUid",
@@ -409,19 +421,16 @@ namespace Domain.Migrations
                 name: "ProductFiles");
 
             migrationBuilder.DropTable(
-                name: "SubCategories");
-
-            migrationBuilder.DropTable(
                 name: "UserRoles");
 
             migrationBuilder.DropTable(
                 name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "SubCategories");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Roles");
@@ -431,6 +440,9 @@ namespace Domain.Migrations
 
             migrationBuilder.DropTable(
                 name: "Customers");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
         }
     }
 }

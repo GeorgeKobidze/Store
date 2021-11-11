@@ -1,5 +1,9 @@
 ﻿using Domain.Application.Customers;
+using Domain.Application.Services.Categories;
 using Domain.Application.Services.CustomerAddresses;
+using Domain.Application.Services.ProductCategories;
+using Domain.Application.Services.ProductFiles;
+using Domain.Application.Services.Products;
 using Domain.Application.Services.UserRoles;
 using Domain.Application.Services.Users;
 using Domain.Infrastructure.AutoMapperProfile;
@@ -27,6 +31,11 @@ namespace Domain.Application.InjectedServices
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ICustomerAddressService, CustomerAddressService>();
             services.AddScoped<IUserRoleService, UserRoleService>();
+            services.AddScoped<ICategoryService,CategoryService>();
+            services.AddScoped<IProductService,ProductService>();
+            services.AddScoped<IProductCategoryService,ProductCategoryService>();
+            services.AddScoped<IProductFileService,ProductFileService>();
+
 
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

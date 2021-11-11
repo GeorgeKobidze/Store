@@ -13,5 +13,7 @@ namespace Domain.Application.Services.Users
         Task ResgisterUser(RegisterUserDto registerUser);
 
         Task<UserLoginInformation> LoginUser(LoginUserDto loginUserDto);
+
+        Task DeleteUser(Guid UserUid);
     }
 }

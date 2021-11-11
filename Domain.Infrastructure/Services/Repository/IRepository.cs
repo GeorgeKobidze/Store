@@ -17,13 +17,14 @@ namespace Domain.Infrastructure.Services
         void Update(IEnumerable<T> entities);
 
         void Delete(T entity);
+        void SoftDelete(T entity);
         void Delete(IEnumerable<T> entities);
 
         Task<IList<T>> GetAll();
         Task<T> GetById(Guid Id);
-
-
         IQueryable<T> Where(Expression<Func<T, bool>> expression);
+
+        IQueryable<T> WhereOnDeleted(Expression<Func<T, bool>> expression);
 
     }
 }

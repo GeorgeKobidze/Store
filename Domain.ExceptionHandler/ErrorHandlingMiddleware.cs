@@ -50,7 +50,9 @@ namespace Domain.ExceptionHandler
                 var url = $"{context.Request.Scheme}://{context.Request.Host}{context.Request.Path}{context.Request.QueryString}";
                 var request = await FormatRequest(context.Request);
                 result = new ExceptionResult(500, operationId, DateTime.Now, exception.Message).ToString();
-                logger.LogError($"{operationId} {Environment.NewLine} {url} {Environment.NewLine} {context.Request.HttpContext.Connection.RemoteIpAddress} {Environment.NewLine} {request} {Environment.NewLine} {exception.ToJson()}");
+                logger.LogError($"{operationId} {Environment.NewLine} {url} {Environment.NewLine}" +
+                    $" {context.Request.HttpContext.Connection.RemoteIpAddress} {Environment.NewLine} {request} " +
+                    $"{Environment.NewLine} {exception.ToJson()}");
             }
 
             context.Response.ContentType = "application/json";
