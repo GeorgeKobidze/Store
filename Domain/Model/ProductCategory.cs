@@ -12,8 +12,5 @@ namespace Domain.Model
     {
         public Product Product { get; set; }
         public Category Category { get; set; }
-
-        [Column(Order = 3)]
-        public SubCategory SubCategory { get; set; }
     }
 }

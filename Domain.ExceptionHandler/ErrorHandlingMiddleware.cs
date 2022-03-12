@@ -35,7 +35,7 @@ namespace Domain.ExceptionHandler
         static async Task HandleExceptionAsync(HttpContext context, Exception exception, ILogger<ErrorHandlingMiddleware> logger)
         {
             Guid operationId = Guid.NewGuid();
-            var code = HttpStatusCode.InternalServerError; // 500 if unexpected
+            var code = HttpStatusCode.InternalServerError; 
             var result = string.Empty;
 
             if (exception is UnauthorizedAccessException)

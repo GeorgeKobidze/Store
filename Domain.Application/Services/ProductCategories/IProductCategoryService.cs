@@ -9,6 +9,6 @@ namespace Domain.Application.Services.ProductCategories
 {
     public interface IProductCategoryService
     {
-        Task AddProductCategory(Product product,SubCategory subCategory,Category category);
+        Task AddProductCategory(Product product,Category category);
     }
 }

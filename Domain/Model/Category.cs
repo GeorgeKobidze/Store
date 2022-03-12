@@ -12,8 +12,6 @@ namespace Domain.Model
     {
         [MaxLength(50)]
         public string CategoryName { get; set; }
-
-        public ICollection<SubCategory> SubCategories { get; set; }
         public ICollection<ProductCategory> ProductCategories { get; set; }
     }
 }

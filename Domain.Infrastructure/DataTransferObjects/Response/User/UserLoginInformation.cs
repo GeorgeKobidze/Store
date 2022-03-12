@@ -12,7 +12,6 @@ namespace Domain.Infrastructure.DataTransferObjects.Response.User
         public string LastName { get; set; }
         public string Email { get; set; }
         public string Mobile { get; set; }
-
         public string JwtToken { get; set; }
     }
 }

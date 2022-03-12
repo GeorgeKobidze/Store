@@ -31,13 +31,7 @@ namespace Store.Management.Controllers
         public async Task<IActionResult> CategoriesList()
         {
             return Ok(await _categoryService.CategoriesList());
-        }
-
-        [HttpGet("GetSubCatgeoriesByUid")]
-        public async Task<IActionResult> GetSubCatgeoriesByUid(Guid Uid)
-        {
-            return Ok(await _categoryService.GetSubCatgeoriesByUid(Uid));
-        }
+        }    
 
     }
 }

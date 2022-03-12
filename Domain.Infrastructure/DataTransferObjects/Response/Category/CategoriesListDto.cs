@@ -10,13 +10,8 @@ namespace Domain.Infrastructure.DataTransferObjects.Response.Category
     {
         public Guid Uid { get; set; }
         public string CategoryName { get; set; }
-        public List<SubCatgeoriesListDto> SubCatgeoriesList { get; set; }
     }
 
-    public class SubCatgeoriesListDto
-    {
-        public Guid Uid { get; set; }
-        public string SubCategoryName { get; set; }
-    }
+  
 
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Infrastructure.Services.UnitOfWork;
 using Domain.Model;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +28,11 @@ namespace Domain.Application.Services.ProductFiles
             };
             await _iunitofWork.Repository.Add(_productFile);
             await _iunitofWork.CommitAsync();
+        }
+
+        public async Task<ProductFile> GetFiles(Guid ProductUid)
+        {
+            return await _iunitofWork.Repository.Where(e => e.ProductUid == ProductUid).FirstOrDefaultAsync();
         }
     }
 }

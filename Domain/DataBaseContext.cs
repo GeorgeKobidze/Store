@@ -32,7 +32,7 @@ namespace Domain
         public DbSet<ProductCategory> ProductCategories { get; set; }
         public DbSet<ProductFile> ProductFiles { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<SubCategory> SubCategories { get; set; }
+        //public DbSet<SubCategory> SubCategories { get; set; }
         public DbSet<User> Users { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
 

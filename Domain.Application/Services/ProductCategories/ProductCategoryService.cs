@@ -17,13 +17,12 @@ namespace Domain.Application.Services.ProductCategories
             _unitOfWork = unitOfWork;
         }
 
-        public async  Task AddProductCategory(Product product, SubCategory subCategory, Category category)
+        public async  Task AddProductCategory(Product product, Category category)
         {
             var prod = new ProductCategory()
             {
                 Category = category,
-                Product = product,
-                SubCategory = subCategory
+                Product = product
             };
 
             await _unitOfWork.Repository.Add(prod);

@@ -14,7 +14,6 @@ namespace Domain.Application.Services.Categories
 
         Task<List<CategoriesListDto>> CategoriesList();
 
-        Task<List<SubCatgeoriesListDto>> GetSubCatgeoriesByUid(Guid Uid);
 
     }
 }

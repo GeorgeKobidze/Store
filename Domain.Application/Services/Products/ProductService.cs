@@ -4,9 +4,11 @@ using Domain.Application.Services.ProductFiles;
 using Domain.ExceptionHandler.CustomException.CategoriesException;
 using Domain.ExceptionHandler.CustomException.ProductException;
 using Domain.Infrastructure.DataTransferObjects.Request.Product;
+using Domain.Infrastructure.DataTransferObjects.Response.Product;
 using Domain.Infrastructure.Services.UnitOfWork;
 using Domain.Model;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
@@ -23,19 +25,17 @@ namespace Domain.Application.Services.Products
         private readonly IUnitOfWork<Product> _unitoOfWork;
         private readonly IMapper _mapper;
         private readonly IUnitOfWork<Category> _categoryWork;
-        private readonly IUnitOfWork<SubCategory> _subCategoryWork;
         private readonly IProductCategoryService _productCategoryService;
         private readonly IProductFileService _productFileService;
 
         public ProductService(IConfiguration configuration, IUnitOfWork<Product> unitoOfWork, IMapper mapper,
-            IUnitOfWork<Category> categoryWork, IUnitOfWork<SubCategory> subCategoryWork, IProductCategoryService productCategoryService,
+            IUnitOfWork<Category> categoryWork, IProductCategoryService productCategoryService,
             IProductFileService productFileService)
         {
             _configuration = configuration;
             _unitoOfWork = unitoOfWork;
             _mapper = mapper;
             _categoryWork = categoryWork;
-            _subCategoryWork = subCategoryWork;
             _productCategoryService = productCategoryService;
             _productFileService = productFileService;
         }
@@ -52,12 +52,10 @@ namespace Domain.Application.Services.Products
             if (_category == null)
                 throw new CategoryNotFoundExcpetion();
 
-            var _subcategory = _subCategoryWork.Repository.Where(e => e.Uid == addProduct.ProductCategories.SubCategoryUid).FirstOrDefault();
-            if (_category == null)
-                throw new SubCategoryNotFoundException();
+            
 
             await _unitoOfWork.Repository.Add(_product);
-            await _productCategoryService.AddProductCategory(_product,_subcategory,_category);
+            await _productCategoryService.AddProductCategory(_product,_category);
 
             await _unitoOfWork.CommitAsync();
 
@@ -86,6 +84,37 @@ namespace Domain.Application.Services.Products
                 }
             }
 
+        }
+
+        public async Task<List<GetAllProductDto>> GetAllProduct()
+        {
+            return _mapper.Map<List<GetAllProductDto>>(await _unitoOfWork.Repository.Where(e => !e.Deleted).ToListAsync());
+        }
+
+        public async Task<GetProductDto> GetProduct(Guid uid)
+        {
+            if (!await _unitoOfWork.Repository.Where(e => e.Uid == uid).AnyAsync())
+                throw new ProductNotFoundException();
+
+
+            var _product = await _unitoOfWork.Repository.Where(e => e.Uid == uid).Include(b => b.ProductFiles).Include(e => e.ProductCategories)
+                .ThenInclude(e => e.Category).FirstOrDefaultAsync();
+
+            var res = _mapper.Map<GetProductDto>(_product);
+            res.CategoryName = _product.ProductCategories.FirstOrDefault().Category.CategoryName;
+            res.Files = _mapper.Map<List<GetFileDto>>(_product.ProductFiles.ToList());
+            return res;
+        }
+
+        public async Task DeleteProduct(Guid ProductUid)
+        {
+            var _product = await _unitoOfWork.Repository.Where(e => e.Uid == ProductUid)
+                                                        .Include(b => b.ProductFiles)
+                                                        .Include(e => e.ProductCategories)
+                                                        .FirstOrDefaultAsync();
+            _product.Deleted = true;
+            _unitoOfWork.Repository.Update(_product);
+            await _unitoOfWork.CommitAsync();
         }
     }
 }

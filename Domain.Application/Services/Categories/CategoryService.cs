@@ -17,13 +17,11 @@ namespace Domain.Application.Services.Categories
     public class CategoryService : ICategoryService
     {
         private readonly IUnitOfWork<Category> _categoryUnitOfWork;
-        private readonly IUnitOfWork<SubCategory> _subCategoryUnitOfWork;
         private readonly IMapper _imapper;
 
-        public CategoryService(IUnitOfWork<Category> categoryUnitOfWork, IUnitOfWork<SubCategory> subCategoryUnitOfWork,IMapper imapper)
+        public CategoryService(IUnitOfWork<Category> categoryUnitOfWork,IMapper imapper)
         {
             _categoryUnitOfWork = categoryUnitOfWork;
-            _subCategoryUnitOfWork = subCategoryUnitOfWork;
             _imapper = imapper;
         }
 
@@ -38,23 +36,7 @@ namespace Domain.Application.Services.Categories
             };
 
             await _categoryUnitOfWork.Repository.Add(_category);
-
-            foreach (var subCategories in addCategories.SubCategories)
-            {
-                if (_subCategoryUnitOfWork.Repository.Where(e => e.SubCategoryName == subCategories.SubCategoryName).Any())
-                    throw new SubCategoryAlreadyAddedException();
-
-                if (addCategories.SubCategories.Where(e => e.SubCategoryName == subCategories.SubCategoryName).Count() > 1)
-                    throw new DuplicateValueInListException();
-
-                var _subCategory = new SubCategory()
-                {
-                    SubCategoryName = subCategories.SubCategoryName,
-                    Category = _category
-                };
-
-                await _subCategoryUnitOfWork.Repository.Add(_subCategory);
-            }
+          
 
 
             await _categoryUnitOfWork.CommitAsync();
@@ -65,19 +47,13 @@ namespace Domain.Application.Services.Categories
         {
             var _categoriesList = new List<CategoriesListDto>();
 
-            var _category = await _categoryUnitOfWork.Repository.Where(e => !e.Deleted).Include(e => e.SubCategories).ToListAsync();
+            var _category = await _categoryUnitOfWork.Repository.Where(e => !e.Deleted).ToListAsync();
 
             _categoriesList =  _imapper.Map<List<CategoriesListDto>>(_category);
-
 
             return _categoriesList;
         }
 
-        public async Task<List<SubCatgeoriesListDto>> GetSubCatgeoriesByUid(Guid Uid)
-        {
-            var subCategory = await _subCategoryUnitOfWork.Repository.Where(e => e.Category.Uid == Uid).ToListAsync();
-
-            return _imapper.Map<List<SubCatgeoriesListDto>>(subCategory);
-        }
+      
     }
 }
